@@ -1,4 +1,4 @@
-package org.jboss.tools.example.html5.com.personenservice;
+package com.personenservice.rest;
 
 import java.util.List;
 

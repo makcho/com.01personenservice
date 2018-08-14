@@ -52,7 +52,7 @@ public class PersonDAO {
 		String getLenghtOfTheName = person.getName();
 	
 			PreparedStatement preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setInt(1, person.getId());
+//			preparedStatement.setInt(1, person.getId());
 			preparedStatement.setString(2, person.getName());
 
 			boolean personInsertet = preparedStatement.executeUpdate() > 0;
@@ -69,7 +69,7 @@ public class PersonDAO {
 		getConnectToDatabase();
 
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
-		preparedStatement.setInt(1, person.getId()); 
+//		preparedStatement.setInt(1, person.getId()); 
 
 		boolean personDeleted = preparedStatement.executeUpdate() > 0;
 		preparedStatement.close();
@@ -84,7 +84,7 @@ public class PersonDAO {
 		
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		preparedStatement.setString(1, person.getName());
-		preparedStatement.setInt(2, person.getId());
+//		preparedStatement.setInt(2, person.getId());
 		
 		boolean personUpdate = preparedStatement.executeUpdate() > 0;
 		preparedStatement.close();
@@ -106,7 +106,7 @@ public class PersonDAO {
 		if (resultSet.next()) {
 			String name = resultSet.getString("name");
 			
-			person = new Person(id, name);
+//			person = new Person(id, name);
 		}
 		
 		resultSet.close();
@@ -127,8 +127,8 @@ public class PersonDAO {
 		while (resultSet.next()) {
 			int id = resultSet.getInt("id");
 			String name = resultSet.getString("name");
-			Person person = new Person(id, name);
-			listAllPersons.add(person);
+//			Person person = new Person(id, name);
+//			listAllPersons.add(person);
 		}
 
 		resultSet.close();

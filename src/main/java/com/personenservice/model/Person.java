@@ -11,22 +11,24 @@ public class Person {
 
 	}
 
-	public Person(int id, String name) {
+	public Person(String id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 
-	int id;
+	@NotNull(message = "ID cannot be null")
+	String id;
 
-	@NotNull
-	@Size(min = 3, max = 20)
+	@NotNull(message = "Name cannot be null")
+	@Size(min = 3, max = 20, message = "bitte 3-20 Zeichen eintragen")
 	String name;
 
-	public int getId() {
+
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
