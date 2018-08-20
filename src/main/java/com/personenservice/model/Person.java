@@ -1,5 +1,6 @@
 package com.personenservice.model;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -28,7 +29,7 @@ public class Person {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(@Valid String id) {
 		this.id = id;
 	}
 

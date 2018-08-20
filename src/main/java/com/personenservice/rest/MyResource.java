@@ -11,8 +11,6 @@ import javax.ws.rs.core.MediaType;
 import com.personenservice.controller.PersonController;
 import com.personenservice.model.Person;
 
-
-
 @Path("PersonenService")
 public class MyResource {
 	
