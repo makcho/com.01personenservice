@@ -9,8 +9,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sound.midi.Soundbank;
-
 public class PersonDAO {
 
 	public static final String DRIVER = "com.mysql.jdbc.Driver";
@@ -21,15 +19,13 @@ public class PersonDAO {
 	String username = "root";
 	String password = "123456";
 
-	
-	
 	public PersonDAO() {
 	}
 
 	public void getConnectToDatabase() throws InstantiationException, IllegalAccessException {
 
 		try {
-			//load the Driver
+			// load the Driver
 			Class.forName(DRIVER).newInstance();
 			System.out.println("Driver loaded!!!");
 		} catch (ClassNotFoundException e) {
@@ -37,7 +33,7 @@ public class PersonDAO {
 		}
 
 		try {
-			//open the connection to the DB
+			// open the connection to the DB
 			connection = DriverManager.getConnection(url, username, password);
 			System.out.println("connection to DB is open");
 		} catch (SQLException e) {
@@ -60,16 +56,34 @@ public class PersonDAO {
 		String sql = "INSERT INTO PERSONEN (IDENT, NAME) VALUES (?,?)";
 
 		getConnectToDatabase();
-				
-			PreparedStatement preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setString(1, id);
-			preparedStatement.setString(2, name);
 
-			boolean personInsertet = preparedStatement.executeUpdate() > 0;
-			System.out.println("a single Person was created");
-			preparedStatement.close();
-			disconnectDatabase();
-			return personInsertet;
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		preparedStatement.setString(1, id);
+		preparedStatement.setString(2, name);
+
+		boolean personInsertet = preparedStatement.executeUpdate() > 0;
+		System.out.println("a single Person was created");
+		preparedStatement.close();
+		disconnectDatabase();
+		return personInsertet;
+	}
+
+	public void validatePerson(String id, String name) throws Exception {
+
+		String sql = "SELECT * FROM PERSONEN WHERE IDENT = ?";
+
+		getConnectToDatabase();
+
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		preparedStatement.setString(1, id);
+		ResultSet resultSet = preparedStatement.executeQuery();
+
+		//create new Person if not existing
+		if (resultSet.next() == false) {
+			insertPerson(id, name);
+		} else {
+			throw new Exception("Person is existing");
+		}
 	}
 
 	public boolean deletePersonById(String id) throws SQLException, InstantiationException, IllegalAccessException {
@@ -77,7 +91,7 @@ public class PersonDAO {
 		getConnectToDatabase();
 
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
-		preparedStatement.setString(1, id); 
+		preparedStatement.setString(1, id);
 
 		boolean personDeleted = preparedStatement.executeUpdate() > 0;
 		System.out.println("person has been deleted by id");
@@ -85,54 +99,57 @@ public class PersonDAO {
 		disconnectDatabase();
 		return personDeleted;
 	}
-	
-	public boolean updatePersonById(Person person) throws SQLException, InstantiationException, IllegalAccessException {
-		String sql = "UPDATE PERSON SET NAME = ?";
-		sql += " WHERE IDENT = ?";
+
+	public boolean updatePersonById(String id, String name) throws SQLException, InstantiationException, IllegalAccessException {
+//		String sql = "UPDATE PERSON SET NAME = ?";
+//		sql += " WHERE IDENT = ?";
+		String sql = "UPDATE PERSONEN SET NAME = ? WHERE IDENT = ?";
 		getConnectToDatabase();
-		
+		System.out.println("1");
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
-		preparedStatement.setString(1, person.getName());
-//		preparedStatement.setInt(2, person.getId());
-		
+		preparedStatement.setString(1, name);
+		preparedStatement.setString(2, id);
+		System.out.println("2");
+
 		boolean personUpdate = preparedStatement.executeUpdate() > 0;
+		System.out.println("3");
 		preparedStatement.close();
-		disconnectDatabase();	
+		disconnectDatabase();
 		return personUpdate;
 	}
-	
+
 	public Person getSinglePersonById(String id) throws SQLException, InstantiationException, IllegalAccessException {
 		Person person = null;
 		String sql = "SELECT * FROM PERSONEN WHERE IDENT = ?";
-		
+
 		getConnectToDatabase();
-		
+
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		preparedStatement.setString(1, id);
-		
+
 		ResultSet resultSet = preparedStatement.executeQuery();
-		
+
 		if (resultSet.next()) {
 			String name = resultSet.getString("name");
-			
+
 //			person = new Person(id, name);
 		}
-		
+
 		resultSet.close();
 		preparedStatement.close();
-		
+
 		return person;
 	}
-	
+
 	public List<Person> listAllThePersons() throws SQLException, InstantiationException, IllegalAccessException {
 		List<Person> listAllPersons = new ArrayList<>();
-				
+
 		String sql = "SELECT * FROM PERSONEN";
 		getConnectToDatabase();
 
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery(sql);
-		
+
 		while (resultSet.next()) {
 			int id = resultSet.getInt("id");
 			String name = resultSet.getString("name");

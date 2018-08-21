@@ -9,20 +9,19 @@ import javax.ws.rs.core.MediaType;
 import com.personenservice.model.Person;
 import com.personenservice.model.PersonDAO;
 
-@Path("delete")
-public class DeleteRessource {
+@Path("update")
+public class UpdateSinglePersonRessource {
 
 	Person person = new Person();
 	PersonDAO personDAO = new PersonDAO();
-	
+
 	@POST
 	@Produces(MediaType.TEXT_PLAIN)
-	public String setSinglePersonWithValues(
-			@FormParam("id") String id) throws Exception 
-	{ 		
+	public String updateSinglePersonById(@FormParam("id") String id, @FormParam("name") String name)
+			throws Exception {
 
-		personDAO.deletePersonById(id);
+		personDAO.updatePersonById(id, name);
 
-		return "Person was deleted by ID: " + id;
+		return "Person with ID " + id + " has a new name"; 
 	}
 }
