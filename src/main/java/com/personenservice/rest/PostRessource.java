@@ -8,6 +8,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
+import com.personenservice.model.JsonRepository;
 import com.personenservice.model.Person;
 import com.personenservice.model.PersonDAO;
 
@@ -16,12 +17,15 @@ public class PostRessource {
 
 	Person person = new Person();
 	PersonDAO personDAO = new PersonDAO();
+	JsonRepository jsonRepository = new JsonRepository();
 
 	@POST
 	public Response setSinglePersonWithValues(@NotNull @Valid @FormParam("id") String id,
 			@NotNull @Size(min = 3, max = 20, message = "bitte 3-20 Zeichen eintragen") @Valid @FormParam("name") String name)
 			throws Exception { // @NotNull & @Size is not working at the moment
 
+		jsonRepository.checkJsonFileIsExistingAndWriteIntoFile();
+		
 		person.setId(id);
 		person.setName(name);
 		personDAO.validatePerson(id, name);
