@@ -9,6 +9,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.json.Json;
+
 public class PersonDAO {
 
 	public static final String DRIVER = "com.mysql.jdbc.Driver";
@@ -84,6 +86,8 @@ public class PersonDAO {
 		} else {
 			throw new Exception("Person is existing");
 		}
+		
+		disconnectDatabase();
 	}
 
 	public boolean deletePersonById(String id) throws SQLException, InstantiationException, IllegalAccessException {
@@ -105,11 +109,9 @@ public class PersonDAO {
 //		sql += " WHERE IDENT = ?";
 		String sql = "UPDATE PERSONEN SET NAME = ? WHERE IDENT = ?";
 		getConnectToDatabase();
-		System.out.println("1");
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		preparedStatement.setString(1, name);
 		preparedStatement.setString(2, id);
-		System.out.println("2");
 
 		boolean personUpdate = preparedStatement.executeUpdate() > 0;
 		System.out.println("3");
@@ -137,31 +139,30 @@ public class PersonDAO {
 
 		resultSet.close();
 		preparedStatement.close();
-
+		disconnectDatabase();
 		return person;
 	}
 
-	public List<Person> listAllThePersons() throws SQLException, InstantiationException, IllegalAccessException {
-		List<Person> listAllPersons = new ArrayList<>();
-
+	public void listAllThePersons() throws SQLException, InstantiationException, IllegalAccessException {
+		
 		String sql = "SELECT * FROM PERSONEN";
+		JsonRepository jsonRepository = new JsonRepository();
+		
 		getConnectToDatabase();
-
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery(sql);
-
+		
 		while (resultSet.next()) {
-			int id = resultSet.getInt("id");
+			String id = resultSet.getString("id");
 			String name = resultSet.getString("name");
-//			Person person = new Person(id, name);
-//			listAllPersons.add(person);
+			//write from mysql into json file 
+			jsonRepository.putValuesIntoJsonObject(id, name);
+
 		}
 
 		resultSet.close();
 		statement.close();
-
 		disconnectDatabase();
 
-		return listAllPersons;
 	}
 }

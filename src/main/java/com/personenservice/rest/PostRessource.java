@@ -23,13 +23,12 @@ public class PostRessource {
 	public Response setSinglePersonWithValues(@NotNull @Valid @FormParam("id") String id,
 			@NotNull @Size(min = 3, max = 20, message = "bitte 3-20 Zeichen eintragen") @Valid @FormParam("name") String name)
 			throws Exception { // @NotNull & @Size is not working at the moment
-
-		jsonRepository.checkJsonFileIsExistingAndWriteIntoFile();
 		
 		person.setId(id);
 		person.setName(name);
 		personDAO.validatePerson(id, name);
-//		personDAO.insertPerson(id, name);
+		jsonRepository.checkJsonFileIsExisting();
+		jsonRepository.putValuesIntoJsonObject(id, name);
 
 		try {
 			return Response.status(200).entity("ID : " + person.getId() + ", Name : " + person.getName()).build();
